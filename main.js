@@ -43,9 +43,11 @@ define(function (require, exports, module) {
         // do full refresh
         var editor = editorManager.getCurrentFullEditor();
         var cursor = editor.getCursorPos();
+        var scroll = editor.getScrollPos();
         var isDirty = editor.document.isDirty;
         editor.document.setText(text);
         editor.setCursorPos(cursor);
+        editor.setScrollPos(scroll.x, scroll.y);
         if (!isDirty) {
           // todo: this is a private API call
           editor.document._markClean();
