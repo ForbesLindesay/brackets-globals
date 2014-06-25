@@ -7,8 +7,10 @@ define(function (require, exports, module) {
   var documentManager = brackets.getModule("document/DocumentManager");
   var editorManager = brackets.getModule("editor/EditorManager");
 
+  var refreshing = false;
   $(documentManager).on('currentDocumentChange', function (e, newDocument, oldDocument) {
     try {
+      refreshing = false;
       if (oldDocument) {
         $(oldDocument).off('change', documentValueChanged);
       }
@@ -29,35 +31,47 @@ define(function (require, exports, module) {
       var before = functionNames;
       functionNames = [];
       var names = [];
+      var nameCount = {};
       text.replace(/\bfunction\s+([a-zA-Z_$][\w$]*)\s*\(/g, function (_, name) {
+        nameCount[name] = nameCount[name] || 0;
+        nameCount[name]++;
         names.push(name);
       });
       names = names.sort().filter(function (name, i) {
         return names.indexOf(name) === i;
       });
-      if (names.length !== before.length || names.some(function (n, i) {
+      var namesChanged = names.length !== before.length || names.some(function (n, i) {
         return n !== before[i];
-      })) {
-        console.dir(names);
-        functionNames = names;
-        // do full refresh
-        var editor = editorManager.getCurrentFullEditor();
-        var cursor = editor.getCursorPos();
-        var scroll = editor.getScrollPos();
-        var isDirty = editor.document.isDirty;
-        editor.document.setText(text);
-        editor.setCursorPos(cursor);
-        editor.setScrollPos(scroll.x, scroll.y);
-        if (!isDirty) {
-          // todo: this is a private API call
-          editor.document._markClean();
-        }
-      } else {
-        functionNames = names;
+      });
+      functionNames = names;
+      if (namesChanged) {
+        refreshDocument();
       }
     } catch (ex) {
       console.error(ex.stack || ex);
     }
+  }
+
+  function refreshDocument() {
+    if (refreshing) return;
+    refreshing = true;
+    setTimeout(function () {
+      if (!refreshing) return;
+      refreshing = false;
+      // do full refresh
+      var editor = editorManager.getCurrentFullEditor();
+      var cursor = editor.getCursorPos();
+      var scroll = editor.getScrollPos();
+      var isDirty = editor.document.isDirty;
+      // todo: this adds an item to the undo/redo queue, and is quite slow
+      editor.document.setText(editor.document.getText());
+      editor.setCursorPos(cursor);
+      editor.setScrollPos(scroll.x, scroll.y);
+      if (!isDirty) {
+        // todo: this is a private API call
+        editor.document._markClean();
+      }
+    }, 500);
   }
 
   function insertCss(css) {
