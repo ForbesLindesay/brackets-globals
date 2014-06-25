@@ -1,6 +1,62 @@
 define(function (require, exports, module) {
   'use strict';
 
+  var CodeMirror = brackets.getModule("thirdparty/CodeMirror2/lib/codemirror");
+
+  var Document = brackets.getModule("document/Document");
+  var documentManager = brackets.getModule("document/DocumentManager");
+  var editorManager = brackets.getModule("editor/EditorManager");
+
+  $(documentManager).on('currentDocumentChange', function (e, newDocument, oldDocument) {
+    try {
+      if (oldDocument) {
+        $(oldDocument).off('change', documentValueChanged);
+      }
+      $(newDocument).on('change', documentValueChanged);
+      documentValueChanged();
+    } catch (ex) {
+      console.error(ex.stack);
+    }
+  });
+
+  var functionNames = [];
+  var lastText = '';
+  function documentValueChanged() {
+    try {
+      var text = documentManager.getCurrentDocument().getText();
+      if (text === lastText) return;
+      lastText = text;
+      var before = functionNames;
+      functionNames = [];
+      var names = [];
+      text.replace(/\bfunction\s+([a-zA-Z_$][\w$]*)\s*\(/g, function (_, name) {
+        names.push(name);
+      });
+      names = names.sort().filter(function (name, i) {
+        return names.indexOf(name) === i;
+      });
+      if (names.length !== before.length || names.some(function (n, i) {
+        return n !== before[i];
+      })) {
+        console.dir(names);
+        functionNames = names;
+        // do full refresh
+        var editor = editorManager.getCurrentFullEditor();
+        var cursor = editor.getCursorPos();
+        var isDirty = editor.document.isDirty;
+        editor.document.setText(text);
+        editor.setCursorPos(cursor);
+        if (!isDirty) {
+          // todo: this is a private API call
+          editor.document._markClean();
+        }
+      } else {
+        functionNames = names;
+      }
+    } catch (ex) {
+      console.error(ex.stack || ex);
+    }
+  }
 
   function insertCss(css) {
     var elem = document.createElement('style');
@@ -398,7 +454,9 @@ define(function (require, exports, module) {
       var st = JSON.parse(JSON.stringify(state));
       var res = this._token.apply(this, arguments);
       if (res === 'variable') {
-        return globals[stream.current()] ? 'variable-2' : 'global-variable';
+        var inGlobals = globals[stream.current()];
+        var inFunctionNames = functionNames.indexOf(stream.current()) !== -1;
+        return (inGlobals || inFunctionNames) ? 'variable-2' : 'global-variable';
       }
       return res;
     }
