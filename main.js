@@ -25,6 +25,11 @@ define(function (require, exports, module) {
   var lastText = '';
   function documentValueChanged() {
     try {
+      if (!documentManager.getCurrentDocument() ||
+          !documentManager.getCurrentDocument().getLanguage() ||
+          documentManager.getCurrentDocument().getLanguage().getId() !== 'javascript') {
+        return;
+      }
       var text = documentManager.getCurrentDocument().getText();
       if (text === lastText) return;
       lastText = text;
@@ -472,7 +477,9 @@ define(function (require, exports, module) {
       if (res === 'variable') {
         var inGlobals = globals[stream.current()];
         var inFunctionNames = functionNames.indexOf(stream.current()) !== -1;
-        return (inGlobals || inFunctionNames) ? 'variable-2' : 'global-variable';
+        if (documentManager.getCurrentDocument().getLanguage().getId() === 'javascript') {
+          return (inGlobals || inFunctionNames) ? 'variable-2' : 'global-variable';
+        }
       }
       return res;
     }
