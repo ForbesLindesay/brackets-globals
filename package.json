@@ -3,7 +3,7 @@
     "title": "JavaScript Globals",
     "description": "Highlight global variables in JavaScript code.",
     "homepage": "https://github.com/ForbesLindesay/brackets-globals",
-    "version": "1.0.4",
+    "version": "2.0.0",
     "author": "Forbes Lindesay (http://www.forbeslindesay.co.uk)",
     "license": "MIT",
     "engines": {
