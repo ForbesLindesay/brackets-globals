@@ -33,7 +33,7 @@ define(function (require, exports, module) {
     return node.type === 'BlockStatement' || node.type === 'FunctionExpression' || node.type === 'FunctionDeclaration' || node.type === 'Program'
   }
   function isIncorrectLength(name) {
-    return name && name[0] === 'l' && name !== 'length' &&
+    return name[0] === 'l' && name !== 'length' &&
       (name.split('').sort().join('') === 'eghlnt' ||
        ['lngth', 'legth','lenth', 'lengh', 'lengt'].indexOf(name) !== -1);
   }
@@ -115,7 +115,7 @@ define(function (require, exports, module) {
         },
         'MemberExpression': function (node) {
           var name = node.property.name;
-          if (isIncorrectInnerHTML(name) || isIncorrectLength(name)) {
+          if (name && (isIncorrectInnerHTML(name) || isIncorrectLength(name))) {
             var loc = node.property.loc;
             newMarkers.push(name);
             newMarkerLocations.push(loc);
