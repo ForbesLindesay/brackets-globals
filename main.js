@@ -107,7 +107,7 @@ define(function (require, exports, module) {
         },
         'MemberExpression': function (node) {
           var name = node.property.name;
-          if (name && name[0] === 'l' && name !== 'length' && name.split('').sort().join('') === 'eghlnt') {
+          if (name && name[0] === 'l' && name !== 'length' && (name.split('').sort().join('') === 'eghlnt' || ['lngth', 'legth','lenth', 'lengh', 'lengt'].indexOf(name) !== -1)) {
             var loc = node.property.loc;
             newMarkers.push(name);
             newMarkerLocations.push(loc);
