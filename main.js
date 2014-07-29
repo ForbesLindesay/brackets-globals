@@ -40,6 +40,23 @@ define(function (require, exports, module) {
   function isIncorrectInnerHTML(name) {
     return name.toLowerCase() === 'innerhtml' && name !== 'innerHTML';
   }
+  function isValidArgumentsUse(node, parents) {
+    var parent = parents[parents.length - 2];
+    if (parent.type === 'MemberExpression') {
+      if (parent.computed === false && parent.property.name && parent.property.name === 'length') {
+        return true;
+      }
+      if (parent.computed === true) {
+        return true;
+      }
+    }
+    if (parent.type === 'CallExpression' &&
+        parent.callee.type === 'MemberExpression' && parent.callee.computed === false && parent.callee.property.name === 'apply' &&
+        node == parent.arguments[1]) {
+      return true;
+    }
+    return false;
+  }
   function documentValueChanged() {
     try {
       if (!documentManager.getCurrentDocument() ||
@@ -66,6 +83,8 @@ define(function (require, exports, module) {
           fn.locals[node.id.name] = true;
         }
       }
+      var newMarkers = [];
+      var newMarkerLocations = [];
       walk.ancestor(ast, {
         'VariableDeclaration': function (node, parents) {
           var parent = null;
@@ -74,11 +93,12 @@ define(function (require, exports, module) {
               parent = parents[i];
             }
           }
-          if (!parent) {
-            console.dir(parents);
-          }
           parent.locals = parent.locals || {};
           node.declarations.forEach(function (declaration) {
+            if (declaration.id.name === 'undefined') {
+              newMarkers.push(declaration.id.name);
+              newMarkerLocations.push(declaration.id.loc);
+            }
             parent.locals[declaration.id.name] = true;
           });
         },
@@ -99,11 +119,15 @@ define(function (require, exports, module) {
           node.handler.body.locals[node.handler.param.name] = true;
         }
       });
-      var newMarkers = [];
-      var newMarkerLocations = [];
       walk.ancestor(ast, {
         'Identifier': function (node, parents) {
           var name = node.name;
+          if (name === 'undefined') {
+            return;
+          }
+          if (name === 'arguments' && isValidArgumentsUse(node, parents)) {
+            return;
+          }
           if (name in globals) return;
           for (var i = 0; i < parents.length; i++) {
             if (parents[i].locals && name in parents[i].locals) {
