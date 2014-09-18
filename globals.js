@@ -361,8 +361,13 @@ define(function (require, exports, module) {
     'jQuery'
   ];
 
+  var mocha = [
+    'describe',
+    'it'
+  ];
+
   var globals = {};
-  ecmaIdentifiers.concat(browserGlobals).concat(developmentGlobals).concat(workerGlobals).concat(nodeGlobals).concat(jquery).forEach(function (name) {
+  ecmaIdentifiers.concat(browserGlobals).concat(developmentGlobals).concat(workerGlobals).concat(nodeGlobals).concat(jquery).concat(mocha).forEach(function (name) {
     globals[name] = true;
   });
   module.exports = globals;
