@@ -366,8 +366,13 @@ define(function (require, exports, module) {
     'it'
   ];
 
+  var brackets = [
+    'define',
+    'bracktes'
+  ];
+
   var globals = {};
-  ecmaIdentifiers.concat(browserGlobals).concat(developmentGlobals).concat(workerGlobals).concat(nodeGlobals).concat(jquery).concat(mocha).forEach(function (name) {
+  ecmaIdentifiers.concat(browserGlobals).concat(developmentGlobals).concat(workerGlobals).concat(nodeGlobals).concat(jquery).concat(mocha).concat(brackets).forEach(function (name) {
     globals[name] = true;
   });
   module.exports = globals;
