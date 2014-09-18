@@ -17,6 +17,7 @@ define(function (require, exports, module) {
     'JSON',
     'Math',
     'Map',
+    'NaN',
     'Number',
     'Object',
     'parseInt',
