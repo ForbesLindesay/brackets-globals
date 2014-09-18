@@ -368,7 +368,7 @@ define(function (require, exports, module) {
 
   var brackets = [
     'define',
-    'bracktes'
+    'brackets'
   ];
 
   var globals = {};
