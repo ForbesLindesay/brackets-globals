@@ -1,12 +1,12 @@
 {
-    "name": "globals",
-    "title": "JavaScript Globals",
-    "description": "Highlight global variables in JavaScript code.",
-    "homepage": "https://github.com/ForbesLindesay/brackets-globals",
-    "version": "2.2.0",
-    "author": "Forbes Lindesay (http://www.forbeslindesay.co.uk)",
-    "license": "MIT",
-    "engines": {
-        "brackets": ">=0.24.0"
-    }
+  "name": "globals",
+  "title": "JavaScript Globals",
+  "description": "Highlight global variables in JavaScript code.",
+  "homepage": "https://github.com/ForbesLindesay/brackets-globals",
+  "version": "3.0.0",
+  "author": "Forbes Lindesay (http://www.forbeslindesay.co.uk)",
+  "license": "MIT",
+  "engines": {
+    "brackets": ">=0.44.0"
+  }
 }
