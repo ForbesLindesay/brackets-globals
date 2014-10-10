@@ -83,6 +83,9 @@ define(function (require, exports, module) {
         if (node.id) {
           fn.locals[node.id.name] = true;
         }
+        if (node.rest && node.rest.type === 'Identifier') {
+          fn.locals[node.rest.name] = true;
+        }
       }
       var newMarkers = [];
       var newMarkerLocations = [];
