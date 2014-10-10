@@ -115,6 +115,7 @@ define(function (require, exports, module) {
           declareFunction(node);
         },
         'FunctionExpression': declareFunction,
+        'ArrowFunctionExpression': declareFunction,
         'TryStatement': function (node) {
           node.handler.body.locals = node.handler.body.locals || {};
           node.handler.body.locals[node.handler.param.name] = true;
