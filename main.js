@@ -13,7 +13,7 @@ define(function (require, exports, module) {
   var mainViewManager = brackets.getModule("view/MainViewManager");
 
   var refreshing = false;
-  $(mainViewManager).on('currentFileChange', function (e, newDocument, oldDocument) {
+  $(editorManager).on('activeEditorChange', function (e, newDocument, oldDocument) {
     try {
       refreshing = false;
       if (oldDocument) {
