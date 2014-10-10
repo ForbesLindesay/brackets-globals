@@ -10,9 +10,10 @@ define(function (require, exports, module) {
   var Document = brackets.getModule("document/Document");
   var documentManager = brackets.getModule("document/DocumentManager");
   var editorManager = brackets.getModule("editor/EditorManager");
+  var mainViewManager = brackets.getModule("view/MainViewManager");
 
   var refreshing = false;
-  $(documentManager).on('currentDocumentChange', function (e, newDocument, oldDocument) {
+  $(mainViewManager).on('currentFileChange', function (e, newDocument, oldDocument) {
     try {
       refreshing = false;
       if (oldDocument) {
