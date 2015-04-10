@@ -22,6 +22,7 @@ define(function (require, exports, module) {
     'Object',
     'parseInt',
     'parseFloat',
+    'Promise',
     'RangeError',
     'ReferenceError',
     'RegExp',
