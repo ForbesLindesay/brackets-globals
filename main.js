@@ -13,13 +13,13 @@ define(function (require, exports, module) {
   var mainViewManager = brackets.getModule("view/MainViewManager");
 
   var refreshing = false;
-  $(editorManager).on('activeEditorChange', function (e, newDocument, oldDocument) {
+  editorManager.on('activeEditorChange', function (e, newDocument, oldDocument) {
     try {
       refreshing = false;
       if (oldDocument) {
-        $(oldDocument).off('change', documentValueChanged);
+        oldDocument.off('change', documentValueChanged);
       }
-      $(newDocument).on('change', documentValueChanged);
+      newDocument.on('change', documentValueChanged);
       documentValueChanged();
     } catch (ex) {
       console.error(ex.stack);
