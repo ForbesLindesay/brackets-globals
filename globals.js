@@ -29,6 +29,7 @@ define(function (require, exports, module) {
     'Set',
     'String',
     'SyntaxError',
+    'Symbol',
     'TypeError',
     'URIError',
     'WeakMap'
