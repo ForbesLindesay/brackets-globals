@@ -25,6 +25,11 @@ define(function (require, exports, module) {
       console.error(ex.stack);
     }
   });
+  documentManager.on('documentSaved', function(){
+    lastText = '';
+    oldMarkers = [];
+    documentValueChanged();
+  });
 
   var functionNames = [];
   var lastText = '';
